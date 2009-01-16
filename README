@@ -1,0 +1,5 @@
+install to a custom gem repository:
+  gem install [gem] --install-dir=/path/to/gems
+
+use the repository to read gems:
+  export GEM_PATH=/path/to/gems
