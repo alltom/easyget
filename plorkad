@@ -1,0 +1,19 @@
+#!/usr/bin/env ruby
+
+ENV['GEM_PATH'] = File.join(File.dirname(__FILE__), "gems")
+
+require "rubygems"
+require "plork-announce"
+
+unless ARGV.length >= 3
+  $stderr.puts "usage: plorkad name port desc [type = udp | tcp (default udp)]"
+  exit
+end
+
+name = ARGV[0]
+port = ARGV[1].to_i
+desc = ARGV[2]
+type = (ARGV[3] || :udp).to_sym
+
+PlorkAnnounce.announce(name, port, desc, type)
+sleep 10 while true

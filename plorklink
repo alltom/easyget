@@ -1,0 +1,23 @@
+#!/usr/bin/env ruby
+
+ENV['GEM_PATH'] = File.join(File.dirname(__FILE__), "gems")
+
+require "rubygems"
+require "plork-announce"
+
+unless ARGV.length >= 1
+  $stderr.puts "usage: plorklink name [type = udp | tcp (default tcp)]"
+  $stderr.puts "outputs: host:port"
+  exit
+end
+
+name = ARGV[0]
+type = (ARGV[1] || :tcp).to_sym
+
+PlorkAnnounce.locate(name, type) do |host, port, desc|
+  puts "#{host}:#{port}"
+  exit
+end
+
+sleep 10
+$stderr.puts "plorklink timed out"

@@ -1,0 +1,34 @@
+#!/usr/bin/env ruby
+
+ENV['GEM_PATH'] = File.join(File.dirname(__FILE__), "gems")
+
+require "rubygems"
+require "plork-announce"
+require "thin"
+
+unless ARGV.length >= 2
+  $stderr.puts "usage: plorkserv name dir [port (default = 3000)]"
+  exit
+end
+
+name = ARGV[0]
+dir = ARGV[1]
+port = (ARGV[2] || 3000).to_i
+
+PlorkAnnounce.announce(name, port, name, :tcp)
+
+# responds to all requests with a tar of the given directory
+# the tar is recreated for each request
+app = proc do |env|
+  data = IO.popen("tar c -C #{dir} .", "r") { |f| f.read }
+  [
+    200,          # Status code
+    {             # Response headers
+      'Content-Type' => 'application/x-tar',
+      'Content-Length' => data.length.to_s,
+    },
+    [data]        # Response body
+  ]
+end
+
+Thin::Server.new("0.0.0.0", port, app).start

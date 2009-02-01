@@ -1,3 +1,21 @@
+TO SHARE FILES
+
+plorkserv name directory [port]
+for example:
+  $ cd mypiece
+  $ plorkserv mypiece .
+
+TO GET FILES
+
+plorkup name
+for example:
+  $ cd mypiece
+  $ plorkup mypiece
+
+
+-------
+Only Tom cares about what's below this line.
+
 install to a custom gem repository:
   gem install [gem] --install-dir=/path/to/gems
 
