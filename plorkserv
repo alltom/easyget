@@ -20,15 +20,25 @@ PlorkAnnounce.announce(name, port, name, :tcp)
 # responds to all requests with a tar of the given directory
 # the tar is recreated for each request
 app = proc do |env|
-  data = IO.popen("tar c -C #{dir} .", "r") { |f| f.read }
-  [
-    200,          # Status code
-    {             # Response headers
-      'Content-Type' => 'application/x-tar',
-      'Content-Length' => data.length.to_s,
-    },
-    [data]        # Response body
-  ]
+  data = case env["REQUEST_PATH"]
+         when "/"
+           IO.popen("tar  c -C #{dir} .", "r") { |f| f.read }
+         when "/gz"
+           IO.popen("tar zc -C #{dir} .", "r") { |f| f.read }
+         else nil
+         end
+  if data
+    [
+      200,          # Status code
+      {             # Response headers
+        'Content-Type' => 'application/x-tar',
+        'Content-Length' => data.length.to_s,
+      },
+      [data]        # Response body
+    ]
+  else
+    [404, {'Content-Length' => "0"}, ""]
+  end
 end
 
 Thin::Server.new("0.0.0.0", port, app).start

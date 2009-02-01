@@ -17,7 +17,7 @@ PlorkAnnounce.locate(name) do |host, port, desc|
   return if found
   found = true
 
-  url = "http://#{host}:#{port}/"
+  url = "http://#{host}:#{port}/gz"
   puts "Discovered #{name} at #{url}"
 
   puts "Starting download..."
@@ -34,7 +34,7 @@ PlorkAnnounce.locate(name) do |host, port, desc|
 
   puts "Unpacking..."
   begin
-    IO.popen("tar vvx", "w") do |fout|
+    IO.popen("tar vvzx", "w") do |fout|
       fout.write(data)
     end
   rescue => e
